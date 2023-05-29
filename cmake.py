@@ -210,7 +210,7 @@ def Build(name, config=None, target=None):
 
     buf = ""
     while p.poll() is None:
-        r = p.stdout.readline(512)
+        r = p.stdout.readline(512).decode()
         buf += r
         lines = buf.split("\n")
         if len(lines) > 1:
