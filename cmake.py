@@ -210,7 +210,13 @@ def Build(name, config=None, target=None):
 
     buf = ""
     while p.poll() is None:
-        r = p.stdout.readline(512).decode()
+        line = p.stdout.readline(512)
+        try:
+            r = line.decode()
+        except UnicodeDecodeError:
+            # FIXME logger, python 2 compatibility
+            print(b"Error: Could not decode line " + line)
+            continue
         buf += r
         lines = buf.split("\n")
         if len(lines) > 1:
