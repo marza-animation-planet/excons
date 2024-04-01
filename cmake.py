@@ -209,11 +209,11 @@ def Build(name, config=None, target=None):
             env.update(_env)
 
     excons.Print("Run Command: %s" % cmd, tool="cmake")
-    p = subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
     buf = ""
     while p.poll() is None:
-        r = p.stdout.readline(512).decode(locale.getdefaultlocale()[1]) if sys.version_info.major > 2 else p.stdout.readline(512)
+        r = p.stdout.readline(512)
         buf += r
         lines = buf.split("\n")
         if len(lines) > 1:
