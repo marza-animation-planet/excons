@@ -209,7 +209,7 @@ def Build(name, config=None, target=None):
             env.update(_env)
 
     excons.Print("Run Command: %s" % cmd, tool="cmake")
-    p = subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    p = subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) if sys.version_info_major > 2 else subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     buf = ""
     while p.poll() is None:
