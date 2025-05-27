@@ -274,10 +274,11 @@ def Require(env):
             # Starting Maya 2018, Maya API is using C++11 standard
             if maya_ver and maya_ver in [2018, 2019, 2020]:
                 env.Append(CPPFLAGS=" -std=c++11")
-            # Starting Maya 2022, Maya API is using C++14 standard
-            # Not sure about Maya 2024
+            # Starting Maya 2022, Maya API is using C++17 standard
             elif maya_ver and maya_ver >= 2022:
-                env.Append(CPPFLAGS=" -std=c++14")
+                env.Append(CPPFLAGS=" -std=c++17")
+            if maya_ver and maya_ver >= 2024:
+                env.Append(CPPFLAGS=" -D_GLIBCXX_USE_CXX11_ABI=1")
 
             env.Append(CPPDEFINES=["LINUX"])
             env.Append(CPPFLAGS=" -fno-strict-aliasing -Wno-comment -Wno-sign-compare -funsigned-char -Wno-reorder -fno-gnu-keywords -pthread")
