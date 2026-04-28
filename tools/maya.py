@@ -47,7 +47,8 @@ _maya_mscver = {
     "2023": "14.2",  # Visual Stuido 2019
     "2024": "14.3",  # Visual Stuido 2022
     "2025": "14.3",  # Visual Stuido 2022
-    "2026": "14.3"  # Visual Stuido 2022
+    "2026": "14.3",  # Visual Stuido 2022
+    "2027": "14.3"
 }
 
 _maya_gccver = {
@@ -57,7 +58,8 @@ _maya_gccver = {
     "2023": "9",
     "2024": "11",
     "2025": "11",
-    "2026": "11"
+    "2026": "11",
+    "2027": "14"
 }
 
 def GetOptionsString():
@@ -277,6 +279,9 @@ def Require(env):
             # Starting Maya 2022, Maya API is using C++17 standard
             elif maya_ver and maya_ver >= 2022:
                 env.Append(CPPFLAGS=" -std=c++17")
+            # Maya 2027, Maya API is using C++20 standard
+            elif maya_ver and maya_ver >= 2027:
+                env.Append(CPPFLAGS=" -std=c++20")
             if maya_ver and maya_ver >= 2024:
                 env.Append(CPPFLAGS=" -D_GLIBCXX_USE_CXX11_ABI=1")
 
