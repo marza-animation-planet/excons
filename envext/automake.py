@@ -79,24 +79,27 @@ def SetupEnvironment(env, settings):
     name = settings["name"]
     # debug = (excons.GetArgument("debug", 0, int) != 0)
     opts = settings.get("automake-opts", {})
-    agenf = excons.abspath("./autogen.sh")
-    conff = excons.abspath("./configure")
+    automake_root = excons.abspath(settings.get("automake-root", "."))
+    agenf = excons.joinpath(automake_root, "autogen.sh")
+    conff = excons.joinpath(automake_root, "configure")
     blddir = automake.BuildDir(name)
     makef = blddir + "/Makefile"
     cfgc = automake.ConfigCachePath(name)
     cexts = [".c", ".h", ".cc", ".hh", ".cpp", ".hpp", ".cxx", ".hxx"]
+    skip_autoconf = settings.get("automake-skip-autoconf", False)
 
     # Override default C/C++ file scanner to avoid SCons being too nosy
     env.Prepend(SCANNERS=SCons.Script.Scanner(function=DummyScanner, skeys=cexts))
     env["AUTOMAKE_PROJECT"] = name
-    env["AUTOMAKE_TOPDIR"] = excons.abspath(".")
+    env["AUTOMAKE_TOPDIR"] = automake_root
     env["AUTOMAKE_OPTIONS"] = opts
     env["AUTOMAKE_TARGET"] = settings.get("automake-target", "install")
     env["AUTOMAKE_CONFIGURE"] = conff
     env["AUTOMAKE_AUTOGEN"] = agenf
     env["AUTOMAKE_MAKEFILE"] = makef
     env["AUTOMAKE_CONFIG_CACHE"] = cfgc
-    env["BUILDERS"]["Autoconf"] = SCons.Script.Builder(action=SCons.Script.Action(AutoconfAction, "Running autoconf ..."))
+    if not skip_autoconf:
+        env["BUILDERS"]["Autoconf"] = SCons.Script.Builder(action=SCons.Script.Action(AutoconfAction, "Running autoconf ..."))
     env["BUILDERS"]["AutomakeConfigure"] = SCons.Script.Builder(action=SCons.Script.Action(ConfigureAction, "Configure using Automake ..."))
     env["BUILDERS"]["Automake"] = SCons.Script.Builder(action=SCons.Script.Action(BuildAction, "Build using Automake ..."))
 
@@ -142,7 +145,7 @@ def SetupEnvironment(env, settings):
     elif os.path.isfile(agenf):
         acins = [agenf]
 
-    if acins:
+    if acins and not skip_autoconf:
         # Don't clean generated configure
         env.NoClean(env.Autoconf([conff], acins))
 

@@ -125,7 +125,7 @@ def ParseOutputsInLines(lines, outfiles, symlinks):
                 srcdst = [x for x in m.group(3).split(" ") if len(x) > 0]
                 count = len(srcdst)
                 if count % 2 == 0:
-                    mid = count / 2
+                    mid = int(count / 2)
                     src = " ".join(srcdst[:mid])
                     dst = " ".join(srcdst[mid:])
                     lst = symlinks.get(src, [])
@@ -169,7 +169,7 @@ def Build(name, target=None):
 
     buf = ""
     while p.poll() is None:
-        r = p.stdout.readline(512)
+        r = p.stdout.readline(512).decode()
         buf += r
         lines = buf.split("\n")
         if len(lines) > 1:
